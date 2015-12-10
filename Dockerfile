@@ -10,16 +10,17 @@ RUN yum clean all && yum makecache
 #时区
 RUN rm -rf /etc/localtime && ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
+ADD ./lanmps-3.0.1.tar.gz /root/
 #清空缓存
-RUN yum clean all
+#RUN yum clean all
 #删除多余文件
-RUN rm -rf /root/lanmps-* && \
-rm -rf /tmp/* && \
-rm -rf /var/log/yum.log && \
-rm -rf /var/cache/yum/* && \
-rm -rf /var/lib/apt/lists/* && \
-rm -rf /usr/share/man/?? && \
-rm -rf /usr/share/man/??_*
+#RUN rm -rf /root/lanmps-* && \
+#rm -rf /tmp/* && \
+#rm -rf /var/log/yum.log && \
+#rm -rf /var/cache/yum/* && \
+#rm -rf /var/lib/apt/lists/* && \
+#rm -rf /usr/share/man/?? && \
+#rm -rf /usr/share/man/??_*
 
 
 EXPOSE 80

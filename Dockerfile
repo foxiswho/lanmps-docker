@@ -13,6 +13,10 @@ RUN rm -rf /etc/localtime && ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localt
 
 RUN cd /root/ && wget http://download.lanmps.com/lanmps/lanmps-3.0.1.tar.gz -O lanmps-3.0.1.tar.gz && tar zxvf lanmps-3.0.1.tar.gz && cd lanmps-3.0.1 && ./docker.sh
 #ADD ./lanmps-3.0.1.tar.gz /root/
+
+
+ADD ./start.sh /root/
+
 #清空缓存
 RUN yum clean all
 #删除多余文件
@@ -27,4 +31,4 @@ rm -rf /usr/share/man/??_*
 
 EXPOSE 80
 
-CMD ["/bin/bash"]
+CMD ["/root/start.sh"]

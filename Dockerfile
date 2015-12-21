@@ -62,9 +62,7 @@ RUN buildDeps=" \
 		libmcrypt-dev \
 		zlib1g-dev \
 		libxpm-dev \
-		libcurl \
-		libcurl3 \
-		libcurl4-gnutls-dev \
+		php5-curl \
 		libmhash2 \
 		libmhash-dev \
 		flex \
@@ -72,7 +70,7 @@ RUN buildDeps=" \
 		xz-utils \
 	"  && \
 	set -x  && \
-	apt-get update && apt-get install -y $buildDeps --no-install-recommends  && \
+	apt-get install -y $buildDeps --no-install-recommends  && \
 	curl -fSL "http://php.net/get/$PHP_FILENAME/from/this/mirror" -o "$PHP_FILENAME"  && \
 	echo "$PHP_SHA256 *$PHP_FILENAME" | sha256sum -c -  && \
 	curl -fSL "http://php.net/get/$PHP_FILENAME.asc/from/this/mirror" -o "$PHP_FILENAME.asc"  && \

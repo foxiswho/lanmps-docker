@@ -27,7 +27,7 @@ RUN apt-get update && \
     unzip \
     supervisor \
 #    wget \
-    libpcre3 libpcre3-dev openssl libssl-dev \
+    libpcre3 libpcre3-dev openssl libssl-dev zlib1g-dev \
     re2c --no-install-recommends
 RUN rm -rf /etc/localtime && \
     ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \

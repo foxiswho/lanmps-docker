@@ -212,10 +212,10 @@ RUN cd /tmp/ && curl -fSL http://download.lanmps.com/memcache/memcache-3.0.8.tar
 	make && make install
 #redis
 RUN cd /tmp/  && \
-	if [ ! -f "/tmp/phpredis-master.zip" ]; then \
-	    curl -fSL https://github.com/nicolasff/phpredis/archive/master.zip -o phpredis-master.zip \
+	#if [ ! -f "/tmp/phpredis-master.zip" ]; then \
+	    curl -fSL https://github.com/nicolasff/phpredis/archive/master.zip -o phpredis-master.zip && \
 	    #wget https://github.com/nicolasff/phpredis/archive/master.zip -O phpredis-master.zip \
-	fi  && \
+	#fi  && \
 	unzip phpredis-master.zip  && \
 	cd phpredis-master  && \
 	${PHP_DIR}/bin/phpize && \

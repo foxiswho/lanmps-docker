@@ -10,10 +10,10 @@ RUN mkdir -p $PHP_DIR
 # persistent / runtime deps
 RUN sed -i 's/http:\/\/httpredir\.debian\.org\/debian\//http:\/\/mirrors\.163\.com\/debian\//g' /etc/apt/sources.list && \
     apt-get update && \
-    sed -i 's/http:\/\/httpredir\.debian\.org\/debian\//http:\/\/mirrors\.163\.com\/debian\//g' /etc/apt/sources.list && \
-    apt-get update && \
-    apt-get install -y ca-certificates curl librecode0 libsqlite3-0 libxml2  autoconf file g++ gcc libc-dev make pkg-config re2c --no-install-recommends && \
-    rm -rf /etc/localtime && \
+    sed -i 's/http:\/\/httpredir\.debian\.org\/debian\//http:\/\/mirrors\.163\.com\/debian\//g' /etc/apt/sources.list
+RUN apt-get update && \
+    apt-get install -y ca-certificates curl librecode0 libsqlite3-0 libxml2  autoconf file g++ gcc libc-dev make pkg-config re2c --no-install-recommends
+RUN rm -rf /etc/localtime && \
     ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     groupadd www && \
     useradd -s /sbin/nologin -g www www && \
@@ -63,10 +63,10 @@ RUN buildDeps=" \
 	echo "$PHP_SHA256 *$PHP_FILENAME" | sha256sum -c -  && \
 	curl -fSL "http://php.net/get/$PHP_FILENAME.asc/from/this/mirror" -o "$PHP_FILENAME.asc"  && \
 	gpg --verify "$PHP_FILENAME.asc"  && \
-	mkdir -p /tmp/$PHP_DIR  && \
-	tar -xf "$PHP_FILENAME" -C /tmp/$PHP_DIR --strip-components=1  && \
+	mkdir -p /tmp/php  && \
+	tar -xf "$PHP_FILENAME" -C /tmp/php --strip-components=1  && \
 	rm "$PHP_FILENAME"*  && \
-	cd /tmp/$PHP_DIR  && \
+	cd /tmp/php  && \
 	 ./configure \
 		--with-config-file-path="$PHP_DIR" \
 		--with-config-file-scan-dir="$PHP_DIR/conf.d" \

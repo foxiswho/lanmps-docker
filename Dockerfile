@@ -27,7 +27,7 @@ RUN apt-get update && \
     unzip \
     supervisor \
 #    wget \
-    libpcre3 libpcre3-dev openssl libssl-dev zlib1g-dev \
+    libpcre3 libpcre3-dev openssl libssl-dev zlibc zlib1g zlib1g-dev \
     re2c --no-install-recommends
 RUN rm -rf /etc/localtime && \
     ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
@@ -98,7 +98,6 @@ RUN buildDeps=" \
 		libpng12-dev \
 		libfreetype6-dev \
 		libmcrypt-dev \
-		zlib1g-dev \
 		libxpm-dev \
 		php5-curl \
 		libmhash2 \

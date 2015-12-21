@@ -1,12 +1,27 @@
 FROM debian:jessie
 
+
+ENV PHP_DIR /www/lanmps/php
+ENV IN_DIR /www/lanmps
+ENV IN_WEB_DIR /www/wwwroot
+ENV IN_WEB_LOG_DIR /www/wwwLogs
+RUN mkdir -p $PHP_DIR
+
 # persistent / runtime deps
 RUN sed -i 's/http:\/\/httpredir\.debian\.org\/debian\//http:\/\/mirrors\.163\.com\/debian\//g' /etc/apt/sources.list && \
     apt-get update && \
-    apt-get install -y ca-certificates curl librecode0 libsqlite3-0 libxml2  autoconf file g++ gcc libc-dev make pkg-config re2c --no-install-recommends
+    apt-get install -y ca-certificates curl librecode0 libsqlite3-0 libxml2  autoconf file g++ gcc libc-dev make pkg-config re2c --no-install-recommends && \
+    rm -rf /etc/localtime && \
+    ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+    groupadd www && \
+    useradd -s /sbin/nologin -g www www && \
+    mkdir -p $IN_DIR/{etc,init.d,action,tmp,run}  && \
+    mkdir -p $IN_WEB_DIR/default && \
+    chmod +w $IN_WEB_DIR/default && \
+    mkdir -p $IN_WEB_LOG_DIR && \
+    chmod 777 $IN_WEB_LOG_DIR && \
+    chown -R www:www $IN_WEB_DIR/default && \
 
-ENV PHP_DIR /www/lanmps/php
-RUN mkdir -p $PHP_DIR
 
 ENV GPG_KEYS 0BD78B5F97500D450838F95DFE857D9A90D90EC1 6E4F6AB321FDC07F2C332E3AC2BF0BC433CFC8B3
 RUN set -xe  && \

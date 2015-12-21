@@ -42,6 +42,7 @@ RUN buildDeps=" \
 		libsqlite3-dev \
 		libssl-dev \
 		libxml2-dev \
+		libjpeg-dev \
 		xz-utils \
 	"  && \
 	set -x  && \

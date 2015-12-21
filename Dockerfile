@@ -1,8 +1,8 @@
 FROM debian:jessie
 
 # persistent / runtime deps
-RUN apt-get update && \
-    sed -i 's/http:\/\/httpredir\.debian\.org\/debian\//http:\/\/mirrors\.163\.com\/debian\//g' /etc/apt/sources.list && \
+RUN sed -i 's/http:\/\/httpredir\.debian\.org\/debian\//http:\/\/mirrors\.163\.com\/debian\//g' /etc/apt/sources.list && \
+    apt-get update && \
     apt-get install -y ca-certificates curl librecode0 libsqlite3-0 libxml2  autoconf file g++ gcc libc-dev make pkg-config re2c --no-install-recommends
 
 ENV PHP_DIR /www/lanmps/php

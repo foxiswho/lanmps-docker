@@ -171,7 +171,7 @@ RUN ln -s "${PHP_DIR}/bin/php" /usr/bin/php && \
     ln -s "${PHP_DIR}/sbin/php-fpm" /usr/bin/php-fpm && \
     cp /tmp/php/sapi/fpm/init.d.php-fpm $IN_DIR/action/php-fpm && \
     mkdir -p ${PHP_DIR}/etc/ && \
-    echo "" >> ${PHP_DIR}/etc/php-fpm.conf.default && \
+    #echo "" >> ${PHP_DIR}/etc/php-fpm.conf.default && \
     #mv ${PHP_DIR}/etc/php-fpm.conf.default ${PHP_DIR}/etc/php-fpm.conf && \
     cp /tmp/php/php.ini-production $PHP_DIR/php.ini
 # PHP 配置文件

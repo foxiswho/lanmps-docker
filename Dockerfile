@@ -117,7 +117,7 @@ RUN buildDeps=" \
 	tar -xf "$PHP_FILENAME" -C /tmp/php --strip-components=1  && \
 	rm "$PHP_FILENAME"*  && \
 	cd /tmp/php  && \
-	 ./configure \
+	 ./configure --prefix="$PHP_DIR" \
 		--with-config-file-path="$PHP_DIR" \
 		--with-config-file-scan-dir="$PHP_DIR/conf.d" \
 		--with-mysql=mysqlnd \

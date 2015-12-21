@@ -8,9 +8,10 @@ ENV IN_WEB_LOG_DIR /www/wwwLogs
 RUN mkdir -p $PHP_DIR
 
 # persistent / runtime deps
-RUN sed -i 's/http:\/\/httpredir\.debian\.org\/debian\//http:\/\/mirrors\.163\.com\/debian\//g' /etc/apt/sources.list && \
+RUN sed -i 's#http://httpredir.debian.org/debian#http://mirrors.163.com/debian#g' /etc/apt/sources.list && \
     apt-get update && \
-    sed -i 's/http:\/\/httpredir\.debian\.org\/debian\//http:\/\/mirrors\.163\.com\/debian\//g' /etc/apt/sources.list
+    sed -i 's#http://httpredir.debian.org/debian#http://mirrors.163.com/debian#g' /etc/apt/sources.list && \
+    sed -i 's#http://security.debian.org/debian#http://mirrors.163.com/debian-security#g' /etc/apt/sources.list
 RUN apt-get update && \
     apt-get install -y \
     ca-certificates \
@@ -27,13 +28,16 @@ RUN apt-get update && \
     unzip \
     supervisor \
 #    wget \
-    libpcre3 libpcre3-dev openssl libssl-dev zlibc zlib1g zlib1g-dev \
+    libpcre3 libpcre3-dev openssl libssl-dev zlibc zlib1g zlib1g-dev mcrypt libmcrypt-dev \
     re2c --no-install-recommends
 RUN rm -rf /etc/localtime && \
     ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     groupadd www && \
     useradd -s /sbin/nologin -g www www && \
-    mkdir -p $IN_DIR/{etc,init.d,action,tmp,run}  && \
+    mkdir -p $IN_DIR/etc  && \
+    mkdir -p $IN_DIR/init.d  && \
+    mkdir -p $IN_DIR/action  && \
+    mkdir -p $IN_DIR/run  && \
     mkdir -p $IN_WEB_DIR/default && \
     chmod +w $IN_WEB_DIR/default && \
     mkdir -p $IN_WEB_LOG_DIR && \
@@ -55,11 +59,11 @@ RUN cd /tmp/ && curl -fSL http://download.lanmps.com/nginx/nginx-1.8.0.tar.gz -o
 	--with-http_ssl_module \
 	--with-http_gzip_static_module \
 	--with-ipv6 \
-	--http-proxy-temp-path=${IN_DIR}/tmp/nginx-proxy \
-	--http-fastcgi-temp-path=${IN_DIR}/tmp/nginx-fcgi \
-	--http-uwsgi-temp-path=${IN_DIR}/tmp/nginx-uwsgi \
-	--http-scgi-temp-path=${IN_DIR}/tmp/nginx-scgi \
-	--http-client-body-temp-path=${IN_DIR}/tmp/nginx-client \
+	#--http-proxy-temp-path=${IN_DIR}/tmp/nginx-proxy \
+	#--http-fastcgi-temp-path=${IN_DIR}/tmp/nginx-fcgi \
+	#--http-uwsgi-temp-path=${IN_DIR}/tmp/nginx-uwsgi \
+	#--http-scgi-temp-path=${IN_DIR}/tmp/nginx-scgi \
+	#--http-client-body-temp-path=${IN_DIR}/tmp/nginx-client \
 	--http-log-path=${IN_WEB_LOG_DIR}/http.log \
 	--error-log-path=${IN_WEB_LOG_DIR}/http-error.log && \
 	make && make install && \
@@ -169,9 +173,8 @@ RUN ln -s "${PHP_DIR}/bin/php" /usr/bin/php && \
     ln -s "${PHP_DIR}/bin/phpize" /usr/bin/phpize && \
     ln -s "${PHP_DIR}/sbin/php-fpm" /usr/bin/php-fpm && \
     cp /tmp/php/sapi/fpm/init.d.php-fpm $IN_DIR/action/php-fpm && \
-    mkdir -p ${PHP_DIR}/etc/ && \
-    #echo "" >> ${PHP_DIR}/etc/php-fpm.conf.default && \
-    #mv ${PHP_DIR}/etc/php-fpm.conf.default ${PHP_DIR}/etc/php-fpm.conf && \
+    cd ${PHP_DIR}/etc && \
+    mv php-fpm.conf.default php-fpm.conf && \
     cp /tmp/php/php.ini-production $PHP_DIR/php.ini
 # PHP 配置文件
 RUN sed -i -e "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g" ${PHP_DIR}/php.ini && \
@@ -188,19 +191,20 @@ sed -i -e 's/magic_quotes_gpc = On/;magic_quotes_gpc = On/g' ${PHP_DIR}/php.ini 
 #sed -i -e 's/disable_functions =.*/disable_functions = passthru,exec,system,chroot,chgrp,chown,shell_exec,proc_open,proc_get_status,ini_alter,ini_restore,dl,openlog,syslog,readlink,symlink,popepassthru,stream_socket_server/g' ${PHP_DIR}/php.ini && \
 #sed -i -e 's:mysql.default_socket =:mysql.default_socket ='$IN_DIR'/mysql/data/mysql.sock:g' ${PHP_DIR}/php.ini && \
 #sed -i -e 's:pdo_mysql.default_socket.*:pdo_mysql.default_socket ='$IN_DIR'/mysql/data/mysql.sock:g' ${PHP_DIR}/php.ini && \
-sed -i -e 's/expose_php = On/expose_php = Off/g' ${PHP_DIR}/php.ini
+sed -i -e 's/expose_php = On/expose_php = Off/g' ${PHP_DIR}/php.ini && \
+sed -i -e 's#extension_dir = "./"#extension_dir = "'$IN_DIR'/php/lib/php/extensions/no-debug-non-zts-20131226/"\nextension = "memcache.so"\nextension =redis.so\nextension =opcache.so\n#' ${PHP_DIR}/php.ini
 
 # php-fpm 配置文件
-#RUN sed -i -e "s/;daemonize\s*=\s*yes/daemonize = no/g" ${PHP_DIR}/etc/php-fpm.conf  && \
-#sed -i -e "s/;catch_workers_output\s*=\s*yes/catch_workers_output = yes/g" ${PHP_DIR}/etc/php-fpm.conf && \
-#sed -i 's:;pid = run/php-fpm.pid:pid = run/php-fpm.pid:g' ${PHP_DIR}/etc/php-fpm.conf && \
-#sed -i 's:;error_log = log/php-fpm.log:error_log = '"$IN_WEB_LOG_DIR"'/php-fpm.log:g' ${PHP_DIR}/etc/php-fpm.conf && \
-#sed -i 's:;log_level = notice:log_level = notice:g' ${PHP_DIR}/etc/php-fpm.conf && \
-#sed -i 's:pm.max_children = 5:pm.max_children = 10:g' ${PHP_DIR}/etc/php-fpm.conf && \
-#sed -i 's:pm.start_servers = 2:pm.start_servers = 3:g' ${PHP_DIR}/etc/php-fpm.conf && \
-#sed -i 's:pm.max_spare_servers = 3:pm.max_spare_servers = 6:g' ${PHP_DIR}/etc/php-fpm.conf && \
-#sed -i 's:;request_terminate_timeout = 0:request_terminate_timeout = 100:g' ${PHP_DIR}/etc/php-fpm.conf && \
-#sed -i 's/127.0.0.1:9000/127.0.0.1:9950/g' ${PHP_DIR}/etc/php-fpm.conf
+RUN sed -i -e "s/;daemonize\s*=\s*yes/daemonize = no/g" ${PHP_DIR}/etc/php-fpm.conf  && \
+sed -i -e "s/;catch_workers_output\s*=\s*yes/catch_workers_output = yes/g" ${PHP_DIR}/etc/php-fpm.conf && \
+sed -i 's:;pid = run/php-fpm.pid:pid = run/php-fpm.pid:g' ${PHP_DIR}/etc/php-fpm.conf && \
+sed -i 's:;error_log = log/php-fpm.log:error_log = '"$IN_WEB_LOG_DIR"'/php-fpm.log:g' ${PHP_DIR}/etc/php-fpm.conf && \
+sed -i 's:;log_level = notice:log_level = notice:g' ${PHP_DIR}/etc/php-fpm.conf && \
+sed -i 's:pm.max_children = 5:pm.max_children = 10:g' ${PHP_DIR}/etc/php-fpm.conf && \
+sed -i 's:pm.start_servers = 2:pm.start_servers = 3:g' ${PHP_DIR}/etc/php-fpm.conf && \
+sed -i 's:pm.max_spare_servers = 3:pm.max_spare_servers = 6:g' ${PHP_DIR}/etc/php-fpm.conf && \
+sed -i 's:;request_terminate_timeout = 0:request_terminate_timeout = 100:g' ${PHP_DIR}/etc/php-fpm.conf && \
+sed -i 's/127.0.0.1:9000/127.0.0.1:9950/g' ${PHP_DIR}/etc/php-fpm.conf
 
 #memcache
 #COPY memcache-3.0.8.tar.gz /tmp/
@@ -242,7 +246,9 @@ ADD conf/supervisord.conf /etc/supervisord.conf
 
 # Start Supervisord
 ADD ./start.sh /start.sh
-RUN chmod 755 /start.sh
+RUN chmod 777 /start.sh && \
+     chmod 777 $IN_DIR/action/nginx && \
+     chmod 777 $IN_DIR/action/php-fpm
 
 # Setup Volume
 VOLUME ["/www/wwwroot/default"]

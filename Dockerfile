@@ -12,7 +12,19 @@ RUN sed -i 's/http:\/\/httpredir\.debian\.org\/debian\//http:\/\/mirrors\.163\.c
     apt-get update && \
     sed -i 's/http:\/\/httpredir\.debian\.org\/debian\//http:\/\/mirrors\.163\.com\/debian\//g' /etc/apt/sources.list
 RUN apt-get update && \
-    apt-get install -y ca-certificates curl librecode0 libsqlite3-0 libxml2  autoconf file g++ gcc libc-dev make pkg-config re2c --no-install-recommends
+    apt-get install -y \
+    ca-certificates \
+    curl librecode0 \
+    libsqlite3-0 \
+    libxml2  \
+    autoconf \
+    file \
+    g++ \
+    gcc \
+    libc-dev \
+    make \
+    pkg-config \
+    re2c --no-install-recommends
 RUN rm -rf /etc/localtime && \
     ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     groupadd www && \
@@ -50,6 +62,8 @@ RUN buildDeps=" \
 		libmcrypt-dev \
 		zlib1g-dev \
 		libxpm-dev \
+		libcurl \
+		libcurl3 \
 		libcurl4-gnutls-dev \
 		libmhash2 \
 		libmhash-dev \

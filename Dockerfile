@@ -45,7 +45,16 @@ RUN buildDeps=" \
 		libssl-dev \
 		libxml2-dev \
 		libjpeg-dev \
-		db4.8-util \
+		libpng12-dev \
+		libfreetype6-dev \
+		libmcrypt-dev \
+		zlib1g-dev \
+		libxpm-dev \
+		libcurl4-gnutls-dev \
+		libmhash2 \
+		libmhash-dev \
+		flex \
+		php5-gd \
 		xz-utils \
 	"  && \
 	set -x  && \

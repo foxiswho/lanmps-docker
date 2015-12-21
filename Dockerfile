@@ -44,7 +44,7 @@ RUN rm -rf /etc/localtime && \
 #NGINX
 #COPY nginx-1.8.0.tar.gz /tmp/
 RUN cd /tmp/ && curl -fSL http://download.lanmps.com/nginx/nginx-1.8.0.tar.gz -o nginx-1.8.0.tar.gz && \
-    tar -xf nginx-1.8.0.tar.gz -C /tmp/nginx-1.8.0 && \
+    tar -zxf nginx-1.8.0.tar.gz && \
     cd /tmp/nginx-1.8.0/ && \
 	./configure \
 	--user=www \

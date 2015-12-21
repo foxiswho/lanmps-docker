@@ -170,7 +170,7 @@ RUN ln -s "${PHP_DIR}/bin/php" /usr/bin/php && \
     ln -s "${PHP_DIR}/bin/phpize" /usr/bin/phpize && \
     ln -s "${PHP_DIR}/sbin/php-fpm" /usr/bin/php-fpm && \
     cp /tmp/php/sapi/fpm/init.d.php-fpm $IN_DIR/action/php-fpm && \
-    mv ${PHP_DIR}/etc/php-fpm.conf.default ${PHP_DIR}/etc/php-fpm.conf && \
+    #mv ${PHP_DIR}/etc/php-fpm.conf.default ${PHP_DIR}/etc/php-fpm.conf && \
     cp /tmp/php/php.ini-production $PHP_DIR/php.ini
 # PHP 配置文件
 RUN sed -i -e "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g" ${PHP_DIR}/php.ini && \

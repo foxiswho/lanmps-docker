@@ -10,6 +10,8 @@ RUN mkdir -p $PHP_DIR
 # persistent / runtime deps
 RUN sed -i 's/http:\/\/httpredir\.debian\.org\/debian\//http:\/\/mirrors\.163\.com\/debian\//g' /etc/apt/sources.list && \
     apt-get update && \
+    sed -i 's/http:\/\/httpredir\.debian\.org\/debian\//http:\/\/mirrors\.163\.com\/debian\//g' /etc/apt/sources.list && \
+    apt-get update && \
     apt-get install -y ca-certificates curl librecode0 libsqlite3-0 libxml2  autoconf file g++ gcc libc-dev make pkg-config re2c --no-install-recommends && \
     rm -rf /etc/localtime && \
     ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
@@ -43,6 +45,7 @@ RUN buildDeps=" \
 		libssl-dev \
 		libxml2-dev \
 		libjpeg-dev \
+		db4.8-util \
 		xz-utils \
 	"  && \
 	set -x  && \

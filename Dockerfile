@@ -10,10 +10,25 @@ RUN mkdir -p $PHP_DIR
 # persistent / runtime deps
 RUN sed -i 's/http:\/\/httpredir\.debian\.org\/debian\//http:\/\/mirrors\.163\.com\/debian\//g' /etc/apt/sources.list && \
     apt-get update && \
-    sed -i 's/http:\/\/httpredir\.debian\.org\/debian\//http:\/\/mirrors\.163\.com\/debian\//g' /etc/apt/sources.list && \
-    apt-get update && \
-    apt-get install -y ca-certificates curl librecode0 libsqlite3-0 libxml2  autoconf file g++ gcc libc-dev make pkg-config re2c --no-install-recommends && \
-    rm -rf /etc/localtime && \
+    sed -i 's/http:\/\/httpredir\.debian\.org\/debian\//http:\/\/mirrors\.163\.com\/debian\//g' /etc/apt/sources.list
+RUN apt-get update && \
+    apt-get install -y \
+    ca-certificates \
+    curl librecode0 \
+    libsqlite3-0 \
+    libxml2  \
+    autoconf \
+    file \
+    g++ \
+    gcc \
+    libc-dev \
+    make \
+    pkg-config \
+    unzip \
+    supervisor \
+    wget \
+    re2c --no-install-recommends
+RUN rm -rf /etc/localtime && \
     ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     groupadd www && \
     useradd -s /sbin/nologin -g www www && \
@@ -23,6 +38,38 @@ RUN sed -i 's/http:\/\/httpredir\.debian\.org\/debian\//http:\/\/mirrors\.163\.c
     mkdir -p $IN_WEB_LOG_DIR && \
     chmod 777 $IN_WEB_LOG_DIR && \
     chown -R www:www $IN_WEB_DIR/default && \
+    mkdir -p ${PHP_DIR}/etc/ && \
+    mkdir -p ${PHP_DIR}/conf.d/
+
+#NGINX
+COPY nginx-1.8.0.tar.gz /tmp/
+RUN cd nginx-1.8.0/ && \
+	./configure \
+	--user=www \
+	--group=www \
+	--prefix=$IN_DIR/nginx \
+	--with-http_stub_status_module \
+	--with-http_ssl_module \
+	--with-http_gzip_static_module \
+	--with-ipv6 \
+	--http-proxy-temp-path=${IN_DIR}/tmp/nginx-proxy \
+	--http-fastcgi-temp-path=${IN_DIR}/tmp/nginx-fcgi \
+	--http-uwsgi-temp-path=${IN_DIR}/tmp/nginx-uwsgi \
+	--http-scgi-temp-path=${IN_DIR}/tmp/nginx-scgi \
+	--http-client-body-temp-path=${IN_DIR}/tmp/nginx-client \
+	--http-log-path=${IN_WEB_LOG_DIR}/http.log \
+	--error-log-path=${IN_WEB_LOG_DIR}/http-error.log && \
+	make && make install && \
+	ln -s $IN_DIR/nginx/sbin/nginx /usr/bin/nginx && \
+	mkdir -p $IN_DIR/nginx/conf/vhost
+
+COPY conf/nginx.conf $IN_DIR/nginx/conf/nginx.conf
+COPY conf/fastcgi.conf $IN_DIR/nginx/conf/fastcgi.conf
+COPY conf/upstream.conf $IN_DIR/nginx/conf/upstream.conf
+COPY conf/default.conf $IN_DIR/nginx/conf/vhost/00000.default.conf
+COPY conf/action.nginx $IN_DIR/action/nginx
+
+RUN chmod +x $IN_DIR/action/nginx
 
 
 ENV GPG_KEYS 0BD78B5F97500D450838F95DFE857D9A90D90EC1 6E4F6AB321FDC07F2C332E3AC2BF0BC433CFC8B3
@@ -50,7 +97,7 @@ RUN buildDeps=" \
 		libmcrypt-dev \
 		zlib1g-dev \
 		libxpm-dev \
-		libcurl4-gnutls-dev \
+		php5-curl \
 		libmhash2 \
 		libmhash-dev \
 		flex \
@@ -58,15 +105,15 @@ RUN buildDeps=" \
 		xz-utils \
 	"  && \
 	set -x  && \
-	apt-get update && apt-get install -y $buildDeps --no-install-recommends  && \
+	apt-get install -y $buildDeps --no-install-recommends  && \
 	curl -fSL "http://php.net/get/$PHP_FILENAME/from/this/mirror" -o "$PHP_FILENAME"  && \
 	echo "$PHP_SHA256 *$PHP_FILENAME" | sha256sum -c -  && \
 	curl -fSL "http://php.net/get/$PHP_FILENAME.asc/from/this/mirror" -o "$PHP_FILENAME.asc"  && \
 	gpg --verify "$PHP_FILENAME.asc"  && \
-	mkdir -p /tmp/$PHP_DIR  && \
-	tar -xf "$PHP_FILENAME" -C /tmp/$PHP_DIR --strip-components=1  && \
+	mkdir -p /tmp/php  && \
+	tar -xf "$PHP_FILENAME" -C /tmp/php --strip-components=1  && \
 	rm "$PHP_FILENAME"*  && \
-	cd /tmp/$PHP_DIR  && \
+	cd /tmp/php  && \
 	 ./configure \
 		--with-config-file-path="$PHP_DIR" \
 		--with-config-file-scan-dir="$PHP_DIR/conf.d" \
@@ -115,10 +162,59 @@ RUN buildDeps=" \
 	{ find /usr/local/bin /usr/local/sbin -type f -executable -exec strip --strip-all '{}' + || true; }  && \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $buildDeps  && \
 	make clean
+#相关软连接
 RUN ln -s "${PHP_DIR}/bin/php" /usr/bin/php && \
     ln -s "${PHP_DIR}/bin/phpize" /usr/bin/phpize && \
     ln -s "${PHP_DIR}/sbin/php-fpm" /usr/bin/php-fpm && \
-    mkdir -p ${PHP_DIR}/etc/
+    cp /tmp/php/sapi/fpm/init.d.php-fpm $IN_DIR/action/php-fpm && \
+    mv ${PHP_DIR}/etc/php-fpm.conf.default ${PHP_DIR}/etc/php-fpm.conf && \
+    cp /tmp/php/php.ini-production $PHP_DIR/php.ini
+# PHP 配置文件
+RUN sed -i -e "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g" ${PHP_DIR}/php.ini && \
+sed -i -e "s/;date.timezone\s*=/date.timezone = PRC/g" ${PHP_DIR}/php.ini && \
+sed -i -e "s/upload_max_filesize\s*=\s*2M/upload_max_filesize = 100M/g" ${PHP_DIR}/php.ini && \
+sed -i -e "s/post_max_size\s*=\s*8M/post_max_size = 100M/g" ${PHP_DIR}/php.ini && \
+sed -i -e "s/max_execution_time\s*=\s*30/max_execution_time = 300/g" ${PHP_DIR}/php.ini && \
+sed -i -e 's/short_open_tag = Off/short_open_tag = On/g' ${PHP_DIR}/php.ini && \
+sed -i -e 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' ${PHP_DIR}/php.ini && \
+sed -i -e 's/;cgi.fix_pathinfo=0/cgi.fix_pathinfo=0/g' ${PHP_DIR}/php.ini && \
+sed -i -e 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' ${PHP_DIR}/php.ini && \
+sed -i -e 's/register_long_arrays = On/;register_long_arrays = On/g' ${PHP_DIR}/php.ini && \
+sed -i -e 's/magic_quotes_gpc = On/;magic_quotes_gpc = On/g' ${PHP_DIR}/php.ini && \
+#sed -i -e 's/disable_functions =.*/disable_functions = passthru,exec,system,chroot,chgrp,chown,shell_exec,proc_open,proc_get_status,ini_alter,ini_restore,dl,openlog,syslog,readlink,symlink,popepassthru,stream_socket_server/g' ${PHP_DIR}/php.ini && \
+#sed -i -e 's:mysql.default_socket =:mysql.default_socket ='$IN_DIR'/mysql/data/mysql.sock:g' ${PHP_DIR}/php.ini && \
+#sed -i -e 's:pdo_mysql.default_socket.*:pdo_mysql.default_socket ='$IN_DIR'/mysql/data/mysql.sock:g' ${PHP_DIR}/php.ini && \
+sed -i -e 's/expose_php = On/expose_php = Off/g' ${PHP_DIR}/php.ini
+
+# php-fpm 配置文件
+RUN sed -i -e "s/;daemonize\s*=\s*yes/daemonize = no/g" ${PHP_DIR}/etc/php-fpm.conf  && \
+sed -i -e "s/;catch_workers_output\s*=\s*yes/catch_workers_output = yes/g" ${PHP_DIR}/etc/php-fpm.conf && \
+sed -i 's:;pid = run/php-fpm.pid:pid = run/php-fpm.pid:g' ${PHP_DIR}/etc/php-fpm.conf && \
+sed -i 's:;error_log = log/php-fpm.log:error_log = '"$IN_WEB_LOG_DIR"'/php-fpm.log:g' ${PHP_DIR}/etc/php-fpm.conf && \
+sed -i 's:;log_level = notice:log_level = notice:g' ${PHP_DIR}/etc/php-fpm.conf && \
+sed -i 's:pm.max_children = 5:pm.max_children = 10:g' ${PHP_DIR}/etc/php-fpm.conf && \
+sed -i 's:pm.start_servers = 2:pm.start_servers = 3:g' ${PHP_DIR}/etc/php-fpm.conf && \
+sed -i 's:pm.max_spare_servers = 3:pm.max_spare_servers = 6:g' ${PHP_DIR}/etc/php-fpm.conf && \
+sed -i 's:;request_terminate_timeout = 0:request_terminate_timeout = 100:g' ${PHP_DIR}/etc/php-fpm.conf && \
+sed -i 's/127.0.0.1:9000/127.0.0.1:9950/g' ${PHP_DIR}/etc/php-fpm.conf
+
+#memcache
+COPY memcache-3.0.8.tar.gz /tmp/
+RUN cd /tmp/memcache-3.0.8  && \
+	${PHP_DIR}/bin/phpize && \
+	./configure --enable-memcache --with-php-config=${PHP_DIR}/bin/php-config --with-zlib-dir  && \
+	make && make install
+#redis
+RUN cd /tmp/  && \
+	if [ ! -f "/tmp/phpredis-master.zip" ]; then \
+	    wget https://github.com/nicolasff/phpredis/archive/master.zip -O phpredis-master.zip \
+	fi  && \
+	unzip phpredis-master.zip  && \
+	cd phpredis-master  && \
+	${PHP_DIR}/bin/phpize && \
+	./configure --with-php-config=${PHP_DIR}/bin/php-config && \
+	make && make install
+
 
 #删除多余文件
 RUN rm -rf /root/lanmps-* && \
@@ -133,8 +229,24 @@ COPY docker-php-ext-* /usr/local/bin/
 
 ##<autogenerated>##
 WORKDIR /www/wwwroot/default
-COPY php-fpm.conf ${PHP_DIR}/etc/
 
-EXPOSE 9000
-CMD ["php-fpm"]
-##</autogenerated>##
+# Supervisor Config
+ADD conf/supervisord.conf /etc/supervisord.conf
+
+# Start Supervisord
+ADD ./start.sh /start.sh
+RUN chmod 755 /start.sh
+
+# Setup Volume
+VOLUME ["/www/wwwroot/default"]
+
+# add test PHP file
+ADD ./index.php /www/wwwroot/default
+RUN chown -R www:www /www/wwwroot/
+RUN chmod -R 777 /www/wwwroot/default
+
+# Expose Ports
+EXPOSE 443
+EXPOSE 80
+
+CMD ["/bin/bash", "/start.sh"]

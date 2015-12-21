@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-cd /usr/src/php/ext
+cd /www/lanmps/php/ext
 
 usage() {
 	echo "usage: $0 [-jN] ext-name [ext-name ...]"
@@ -12,7 +12,7 @@ usage() {
 	echo 'if custom ./configure arguments are necessary, see docker-php-ext-configure'
 	echo
 	echo 'Possible values for ext-name:'
-	echo $(find /usr/src/php/ext -mindepth 2 -maxdepth 2 -type f -name 'config.m4' | cut -d/ -f6 | sort)
+	echo $(find /www/lanmps/php/ext -mindepth 2 -maxdepth 2 -type f -name 'config.m4' | cut -d/ -f6 | sort)
 }
 
 opts="$(getopt -o 'h?j:' --long 'help,jobs:' -- "$@" || { usage >&2 && false; })"

@@ -205,7 +205,7 @@ sed -i -e 's/expose_php = On/expose_php = Off/g' ${PHP_DIR}/php.ini
 
 #memcache
 #COPY memcache-3.0.8.tar.gz /tmp/
-RUN cd /tmp/ && curl -fSLhttp://download.lanmps.com/memcache/memcache-3.0.8.tar.gz -o memcache-3.0.8.tar.gz && \
+RUN cd /tmp/ && curl -fSL http://download.lanmps.com/memcache/memcache-3.0.8.tar.gz -o memcache-3.0.8.tar.gz && \
     tar -zxf memcache-3.0.8.tar.gz && \
     cd /tmp/memcache-3.0.8/ && \
 	${PHP_DIR}/bin/phpize && \
@@ -214,7 +214,7 @@ RUN cd /tmp/ && curl -fSLhttp://download.lanmps.com/memcache/memcache-3.0.8.tar.
 #redis
 RUN cd /tmp/  && \
 	if [ ! -f "/tmp/phpredis-master.zip" ]; then \
-	    curl -fSL "https://github.com/nicolasff/phpredis/archive/master.zip" -o phpredis-master.zip \
+	    curl -fSL https://github.com/nicolasff/phpredis/archive/master.zip -o phpredis-master.zip \
 	    #wget https://github.com/nicolasff/phpredis/archive/master.zip -O phpredis-master.zip \
 	fi  && \
 	unzip phpredis-master.zip  && \

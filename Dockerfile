@@ -9,8 +9,8 @@ ENV PHP_DIR /www/lanmps/php
 RUN mkdir -p $PHP_DIR
 
 ENV GPG_KEYS 0BD78B5F97500D450838F95DFE857D9A90D90EC1 6E4F6AB321FDC07F2C332E3AC2BF0BC433CFC8B3
-RUN set -xe \
-	&& for key in $GPG_KEYS; do \
+RUN set -xe  && \
+	for key in $GPG_KEYS; do \
 		gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
 	done
 
@@ -28,18 +28,18 @@ RUN buildDeps=" \
 		libssl-dev \
 		libxml2-dev \
 		xz-utils \
-	" \
-	&& set -x \
-	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends \
-	&& curl -fSL "http://php.net/get/$PHP_FILENAME/from/this/mirror" -o "$PHP_FILENAME" \
-	&& echo "$PHP_SHA256 *$PHP_FILENAME" | sha256sum -c - \
-	&& curl -fSL "http://php.net/get/$PHP_FILENAME.asc/from/this/mirror" -o "$PHP_FILENAME.asc" \
-	&& gpg --verify "$PHP_FILENAME.asc" \
-	&& mkdir -p /tmp/$PHP_DIR \
-	&& tar -xf "$PHP_FILENAME" -C /tmp/$PHP_DIR --strip-components=1 \
-	&& rm "$PHP_FILENAME"* \
-	&& cd /tmp/$PHP_DIR \
-	&& ./configure \
+	"  && \
+	set -x  && \
+	apt-get update && apt-get install -y $buildDeps --no-install-recommends  && \
+	curl -fSL "http://php.net/get/$PHP_FILENAME/from/this/mirror" -o "$PHP_FILENAME"  && \
+	echo "$PHP_SHA256 *$PHP_FILENAME" | sha256sum -c -  && \
+	curl -fSL "http://php.net/get/$PHP_FILENAME.asc/from/this/mirror" -o "$PHP_FILENAME.asc"  && \
+	gpg --verify "$PHP_FILENAME.asc"  && \
+	mkdir -p /tmp/$PHP_DIR  && \
+	tar -xf "$PHP_FILENAME" -C /tmp/$PHP_DIR --strip-components=1  && \
+	rm "$PHP_FILENAME"*  && \
+	cd /tmp/$PHP_DIR  && \
+	 ./configure \
 		--with-config-file-path="$PHP_DIR" \
 		--with-config-file-scan-dir="$PHP_DIR/conf.d" \
 		--with-mysql=mysqlnd \
@@ -81,16 +81,16 @@ RUN buildDeps=" \
         --enable-sockets \
         --enable-zip \
         --enable-soap \
-        --disable-fileinfo \
-	&& make -j"$(nproc)" \
-	&& make install \
-	&& { find /usr/local/bin /usr/local/sbin -type f -executable -exec strip --strip-all '{}' + || true; } \
-	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $buildDeps \
-	&& make clean
-RUN ln -s "${PHP_DIR}/bin/php" /usr/bin/php
-    && ln -s "${PHP_DIR}/bin/phpize" /usr/bin/phpize
-    && ln -s "${PHP_DIR}/sbin/php-fpm" /usr/bin/php-fpm
-    && mkdir -p ${PHP_DIR}/etc/
+        --disable-fileinfo && \
+	make -j"$(nproc)" && \
+	make install  && \
+	{ find /usr/local/bin /usr/local/sbin -type f -executable -exec strip --strip-all '{}' + || true; }  && \
+	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $buildDeps  && \
+	make clean
+RUN ln -s "${PHP_DIR}/bin/php" /usr/bin/php && \
+    ln -s "${PHP_DIR}/bin/phpize" /usr/bin/phpize && \
+    ln -s "${PHP_DIR}/sbin/php-fpm" /usr/bin/php-fpm && \
+    mkdir -p ${PHP_DIR}/etc/
 
 #删除多余文件
 RUN rm -rf /root/lanmps-* && \

@@ -22,7 +22,7 @@ RUN rm -rf /etc/localtime && \
     chmod +w $IN_WEB_DIR/default && \
     mkdir -p $IN_WEB_LOG_DIR && \
     chmod 777 $IN_WEB_LOG_DIR && \
-    chown -R www:www $IN_WEB_DIR/default && \
+    chown -R www:www $IN_WEB_DIR/default
 
 
 ENV GPG_KEYS 0BD78B5F97500D450838F95DFE857D9A90D90EC1 6E4F6AB321FDC07F2C332E3AC2BF0BC433CFC8B3

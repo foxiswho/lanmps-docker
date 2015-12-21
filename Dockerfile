@@ -26,7 +26,7 @@ RUN apt-get update && \
     pkg-config \
     unzip \
     supervisor \
-    wget \
+#    wget \
     re2c --no-install-recommends
 RUN rm -rf /etc/localtime && \
     ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
@@ -42,8 +42,10 @@ RUN rm -rf /etc/localtime && \
     mkdir -p ${PHP_DIR}/conf.d/
 
 #NGINX
-COPY nginx-1.8.0.tar.gz /tmp/
-RUN cd nginx-1.8.0/ && \
+#COPY nginx-1.8.0.tar.gz /tmp/
+RUN cd /tmp/ && curl -fSL "http://download.lanmps.com/nginx/nginx-1.8.0.tar.gz" -o nginx-1.8.0.tar.gz && \
+    tar -xf nginx-1.8.0.tar.gz -C /tmp/nginx-1.8.0 && \
+    cd nginx-1.8.0/ && \
 	./configure \
 	--user=www \
 	--group=www \
@@ -207,7 +209,8 @@ RUN cd /tmp/memcache-3.0.8  && \
 #redis
 RUN cd /tmp/  && \
 	if [ ! -f "/tmp/phpredis-master.zip" ]; then \
-	    wget https://github.com/nicolasff/phpredis/archive/master.zip -O phpredis-master.zip \
+	    curl -fSL "https://github.com/nicolasff/phpredis/archive/master.zip" -o phpredis-master.zip \
+	    #wget https://github.com/nicolasff/phpredis/archive/master.zip -O phpredis-master.zip \
 	fi  && \
 	unzip phpredis-master.zip  && \
 	cd phpredis-master  && \

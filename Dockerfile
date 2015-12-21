@@ -192,16 +192,16 @@ sed -i -e 's/magic_quotes_gpc = On/;magic_quotes_gpc = On/g' ${PHP_DIR}/php.ini 
 sed -i -e 's/expose_php = On/expose_php = Off/g' ${PHP_DIR}/php.ini
 
 # php-fpm 配置文件
-RUN sed -i -e "s/;daemonize\s*=\s*yes/daemonize = no/g" ${PHP_DIR}/etc/php-fpm.conf  && \
-sed -i -e "s/;catch_workers_output\s*=\s*yes/catch_workers_output = yes/g" ${PHP_DIR}/etc/php-fpm.conf && \
-sed -i 's:;pid = run/php-fpm.pid:pid = run/php-fpm.pid:g' ${PHP_DIR}/etc/php-fpm.conf && \
-sed -i 's:;error_log = log/php-fpm.log:error_log = '"$IN_WEB_LOG_DIR"'/php-fpm.log:g' ${PHP_DIR}/etc/php-fpm.conf && \
-sed -i 's:;log_level = notice:log_level = notice:g' ${PHP_DIR}/etc/php-fpm.conf && \
-sed -i 's:pm.max_children = 5:pm.max_children = 10:g' ${PHP_DIR}/etc/php-fpm.conf && \
-sed -i 's:pm.start_servers = 2:pm.start_servers = 3:g' ${PHP_DIR}/etc/php-fpm.conf && \
-sed -i 's:pm.max_spare_servers = 3:pm.max_spare_servers = 6:g' ${PHP_DIR}/etc/php-fpm.conf && \
-sed -i 's:;request_terminate_timeout = 0:request_terminate_timeout = 100:g' ${PHP_DIR}/etc/php-fpm.conf && \
-sed -i 's/127.0.0.1:9000/127.0.0.1:9950/g' ${PHP_DIR}/etc/php-fpm.conf
+#RUN sed -i -e "s/;daemonize\s*=\s*yes/daemonize = no/g" ${PHP_DIR}/etc/php-fpm.conf  && \
+#sed -i -e "s/;catch_workers_output\s*=\s*yes/catch_workers_output = yes/g" ${PHP_DIR}/etc/php-fpm.conf && \
+#sed -i 's:;pid = run/php-fpm.pid:pid = run/php-fpm.pid:g' ${PHP_DIR}/etc/php-fpm.conf && \
+#sed -i 's:;error_log = log/php-fpm.log:error_log = '"$IN_WEB_LOG_DIR"'/php-fpm.log:g' ${PHP_DIR}/etc/php-fpm.conf && \
+#sed -i 's:;log_level = notice:log_level = notice:g' ${PHP_DIR}/etc/php-fpm.conf && \
+#sed -i 's:pm.max_children = 5:pm.max_children = 10:g' ${PHP_DIR}/etc/php-fpm.conf && \
+#sed -i 's:pm.start_servers = 2:pm.start_servers = 3:g' ${PHP_DIR}/etc/php-fpm.conf && \
+#sed -i 's:pm.max_spare_servers = 3:pm.max_spare_servers = 6:g' ${PHP_DIR}/etc/php-fpm.conf && \
+#sed -i 's:;request_terminate_timeout = 0:request_terminate_timeout = 100:g' ${PHP_DIR}/etc/php-fpm.conf && \
+#sed -i 's/127.0.0.1:9000/127.0.0.1:9950/g' ${PHP_DIR}/etc/php-fpm.conf
 
 #memcache
 COPY memcache-3.0.8.tar.gz /tmp/

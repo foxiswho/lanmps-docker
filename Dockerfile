@@ -13,7 +13,7 @@ RUN rm -rf /etc/localtime && \
     mkdir -p $PHP_DIR && \
     mkdir -p $IN_WEB_DIR/wwwLogs && \
     mkdir -p $IN_WEB_DIR/vhost && \
-    ln -s $IN_WEB_DIR/wwwLogs /www/
+    ln -s $IN_WEB_DIR/wwwLogs /www/ && \
     mkdir -p $IN_DIR/etc  && \
     mkdir -p $IN_DIR/init.d  && \
     mkdir -p $IN_DIR/action  && \

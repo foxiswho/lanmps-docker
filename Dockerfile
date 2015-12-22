@@ -29,6 +29,18 @@ RUN apt-get update && \
     supervisor \
 #    wget \
     libpcre3 libpcre3-dev openssl libssl-dev zlibc zlib1g zlib1g-dev mcrypt libmcrypt-dev \
+    libssl-dev \
+    libxml2-dev \
+    libjpeg-dev \
+    libpng12-dev \
+    libfreetype6-dev \
+    libxpm-dev \
+    php5-curl \
+    libmhash2 \
+    libmhash-dev \
+    flex \
+    php5-gd \
+    libcurl4-openssl-dev \
     re2c --no-install-recommends
 RUN rm -rf /etc/localtime && \
     ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
@@ -92,22 +104,9 @@ ENV PHP_SHA256 8ef43271d9bd8cc8f8d407d3ba569de9fa14a28985ae97c76085bb50d597de98
 # --enable-mysqlnd is included below because it's harder to compile after the fact the extensions are (since it's a plugin for several extensions, not an extension in itself)
 RUN buildDeps=" \
 		$PHP_EXTRA_BUILD_DEPS \
-		libcurl4-openssl-dev \
 		libreadline6-dev \
 		librecode-dev \
 		libsqlite3-dev \
-		libssl-dev \
-		libxml2-dev \
-		libjpeg-dev \
-		libpng12-dev \
-		libfreetype6-dev \
-		libmcrypt-dev \
-		libxpm-dev \
-		php5-curl \
-		libmhash2 \
-		libmhash-dev \
-		flex \
-		php5-gd \
 		xz-utils \
 	"  && \
 	set -x  && \
@@ -192,7 +191,9 @@ sed -i -e 's/magic_quotes_gpc = On/;magic_quotes_gpc = On/g' ${PHP_DIR}/php.ini 
 #sed -i -e 's:mysql.default_socket =:mysql.default_socket ='$IN_DIR'/mysql/data/mysql.sock:g' ${PHP_DIR}/php.ini && \
 #sed -i -e 's:pdo_mysql.default_socket.*:pdo_mysql.default_socket ='$IN_DIR'/mysql/data/mysql.sock:g' ${PHP_DIR}/php.ini && \
 sed -i -e 's/expose_php = On/expose_php = Off/g' ${PHP_DIR}/php.ini && \
-sed -i -e 's#extension_dir = "./"#extension_dir = "'$IN_DIR'/php/lib/php/extensions/no-debug-non-zts-20131226/"\nextension = "memcache.so"\nextension =redis.so\nextension =opcache.so\n#' ${PHP_DIR}/php.ini
+#sed -i 's#\[opcache\]#\[opcache\]\nzend_extension=opcache.so#g' ${PHP_DIR}/php.ini && \
+sed -i -e "s#;\s*expose_php#expose_php#g" ${PHP_DIR}/php.ini && \
+sed -i -e 's#extension_dir = "./"#extension_dir = "'$IN_DIR'/php/lib/php/extensions/no-debug-non-zts-20131226/"\nextension = memcache.so\nextension =redis.so\nzend_extension =opcache.so\n#' ${PHP_DIR}/php.ini
 
 # php-fpm 配置文件
 RUN sed -i -e "s/;daemonize\s*=\s*yes/daemonize = no/g" ${PHP_DIR}/etc/php-fpm.conf  && \

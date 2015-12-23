@@ -28,8 +28,6 @@ RUN rm -rf /etc/localtime && \
 
 # persistent / runtime deps
 RUN sed -i 's#http://httpredir.debian.org/debian#http://mirrors.163.com/debian#g' /etc/apt/sources.list && \
-    apt-get update && \
-    sed -i 's#http://httpredir.debian.org/debian#http://mirrors.163.com/debian#g' /etc/apt/sources.list && \
     sed -i 's#http://security.debian.org/debian#http://mirrors.163.com/debian-security#g' /etc/apt/sources.list
 RUN apt-get update && \
     apt-get install -y \

@@ -244,7 +244,7 @@ ADD conf/supervisord.conf /etc/supervisord.conf
 # Start Supervisord
 ADD ./start.sh /start.sh
 # add test PHP file
-ADD ./index.php /www/wwwroot/default
+ADD ./conf/index.php /www/wwwroot/default
 
 RUN chmod 777 /start.sh && \
      chmod 777 $IN_DIR/action/nginx && \

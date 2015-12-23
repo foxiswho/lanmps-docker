@@ -211,7 +211,7 @@ sed -i 's:;request_terminate_timeout = 0:request_terminate_timeout = 100:g' ${PH
 sed -i 's/127.0.0.1:9000/127.0.0.1:9950/g' ${PHP_DIR}/etc/php-fpm.conf
 
 #memcache
-ADD down/memcache-3.0.8.tar.gz /tmp/
+ADD down/memcache-3.0.8.tgz /tmp/
 #RUN [ ! -d "/tmp/memcache-3.0.8" ] && curl -fSL http://download.lanmps.com/memcache/memcache-3.0.8.tar.gz -o memcache-3.0.8.tar.gz && tar -zxf memcache-3.0.8.tar.gz
 RUN cd /tmp/memcache-3.0.8/ && \
 	${PHP_DIR}/bin/phpize && \
@@ -231,7 +231,9 @@ RUN cd /tmp/  && \
 
 
 #删除多余文件
-RUN rm -rf /root/lanmps-* && \
+RUN apt-get clean && \
+apt-get autoclean && \
+rm -rf /root/lanmps-* && \
 rm -rf /tmp/* && \
 rm -rf /var/log/yum.log && \
 rm -rf /var/cache/yum/* && \

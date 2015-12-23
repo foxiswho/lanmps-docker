@@ -62,7 +62,7 @@ RUN apt-get update && \
 
 #NGINX
 ADD down/nginx-1.8.0.tar.gz /tmp/
-RUN [ ! -d "/tmp/nginx-1.8.0" ] && curl -fSL http://download.lanmps.com/nginx/nginx-1.8.0.tar.gz -o nginx-1.8.0.tar.gz && tar -zxf nginx-1.8.0.tar.gz
+#RUN [ ! -d "/tmp/nginx-1.8.0" ] && curl -fSL http://download.lanmps.com/nginx/nginx-1.8.0.tar.gz -o nginx-1.8.0.tar.gz && tar -zxf nginx-1.8.0.tar.gz
 RUN cd /tmp/nginx-1.8.0/ && \
 	./configure \
 	--user=www \
@@ -210,7 +210,7 @@ sed -i 's/127.0.0.1:9000/127.0.0.1:9950/g' ${PHP_DIR}/etc/php-fpm.conf
 
 #memcache
 ADD down/memcache-3.0.8.tar.gz /tmp/
-RUN [ ! -d "/tmp/memcache-3.0.8" ] && curl -fSL http://download.lanmps.com/memcache/memcache-3.0.8.tar.gz -o memcache-3.0.8.tar.gz && tar -zxf memcache-3.0.8.tar.gz
+#RUN [ ! -d "/tmp/memcache-3.0.8" ] && curl -fSL http://download.lanmps.com/memcache/memcache-3.0.8.tar.gz -o memcache-3.0.8.tar.gz && tar -zxf memcache-3.0.8.tar.gz
 RUN cd /tmp/memcache-3.0.8/ && \
 	${PHP_DIR}/bin/phpize && \
 	./configure --enable-memcache --with-php-config=${PHP_DIR}/bin/php-config --with-zlib-dir  && \

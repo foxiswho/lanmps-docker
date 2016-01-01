@@ -32,13 +32,13 @@ ADD conf/supervisord.conf /etc/supervisord.conf
 # Start Supervisord
 ADD ./start.sh /start.sh
 # add test PHP file
-ADD ./conf/index.php /www/wwwroot/default
+ADD ./conf/index.php $IN_WEB_DIR/default
 ADD ./conf/action.nginx $IN_DIR/action/nginx
 
 RUN chmod +x /start.sh && \
      chmod +x $IN_DIR/action/nginx && \
-     chown -R www:www /www/wwwroot/  && \
-     chmod -R 777 /www/wwwroot/default
+     chown -R www:www $IN_WEB_DIR/  && \
+     chmod -R 777 $IN_WEB_DIR/default
      
      
 # persistent / runtime deps

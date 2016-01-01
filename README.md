@@ -5,6 +5,7 @@ PHP:5.6.x
 Pull the image from the docker index rather than downloading the git repo. This prevents you having to build the image on every docker host.
 
 ```
+#拉取镜像
 docker pull foxiswho/lanmps-docker:latest
 ```
 # Running
@@ -19,14 +20,26 @@ You can then browse to http://\<docker_host\>:8080 to view the default install f
 If you want to link to your web site directory on the docker host to the container run:
 
 ```
+#创建容器
 sudo docker run --name lanmps -p 8080:80 -v /your_code_directory:/www/wwwroot/default -d foxiswho/lanmps-docker:latest
 
 sudo docker run --name lanmps -p 8080:80 -v /home/fox/www:/www/wwwroot/default -d foxiswho/lanmps-docker:latest
 ```
 
+# BIN
+```
+#启动 容器
+sudo docker start lanmps
+#关闭 容器
+sudo docker stop lanmps
+#删除 容器
+sudo docker rm lanmps
+```
+
 ## Special Features
 
 ````
+#进入容器内部
 sudo docker exec -it <CONATINER_NAME> /bin/bash
 
 sudo docker exec -it lanmps /bin/bash
@@ -61,6 +74,7 @@ docker run --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root -d mysql:latest
 
 #  Nginx + PHP + Mysql + Redis + ElasticSearch
 ```
+#整合容器
 sudo docker run --name lanmps --link mysql:db --link redis:redis --link es:es -p 80:80 -v /home/lanmps/www:/www/wwwroot/default -d foxiswho/lanmps-docker:latest
 or
 sudo docker run --name lanmps --link mysql:db -p 80:80 -v /home/lanmps/www:/www/wwwroot/default -d foxiswho/lanmps-docker:latest
@@ -71,5 +85,6 @@ sudo docker run --name lanmps --link mysql:db -p 80:80 -v /home/lanmps/www:/www/
 ```
 ## TOOL
 ```
-apt-get install net-tools  ps vim ping
+#容器内装软件
+apt-get install net-tools  ps vim-gtk ping
 ```

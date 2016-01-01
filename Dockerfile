@@ -32,7 +32,7 @@ ADD conf/supervisord.conf /etc/supervisord.conf
 # Start Supervisord
 ADD ./start.sh /start.sh
 # add test PHP file
-ADD ./conf/index.php $IN_WEB_DIR/default
+ADD ./conf/index.php $IN_WEB_DIR/default/
 ADD ./conf/action.nginx $IN_DIR/action/nginx
 
 RUN chmod +x /start.sh && \

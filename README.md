@@ -284,17 +284,15 @@ foxiswho/lanmps-docker   镜像名称:版本
 >php 访问本地mysql 使用的是localhost，容器内部即可使用 db
 
 -v:卷，外部目录虚拟到容器内目录     外部目录：容器内目录
->-v /home/lanmps/www:/www/wwwroot/default
->    /home/lanmps/www 外部目录，我的项目目录
->    /www/wwwroot/default 容器内部目录，这个是不能改变的
+* -v /home/lanmps/www:/www/wwwroot/default
+* /home/lanmps/www 外部目录，我的项目目录
+* /www/wwwroot/default 容器内部目录，这个是不能改变的
 
 **注意**
-本地 目录设置权限和用户组
-chown -R www:www /home/lanmps/www
-
-chmod -R 777 /home/lanmps/www
-
-这个时候访问本机 127.0.0.1:80  就可以看到 你的项目站点了
+* 本地 目录设置权限和用户组
+* chown -R www:www /home/lanmps/www
+* chmod -R 777 /home/lanmps/www
+* 这个时候访问本机 127.0.0.1:80  就可以看到 你的项目站点了
 
 
 ##6.4.2 方式二 使用IP端口连接
@@ -309,11 +307,11 @@ docker run --name lanmps -p 80:80 -v /home/lanmps/www:/www/wwwroot/default -d fo
 例如 本机ip 为 192.168.1.122
 那么在链接   数据库3306 的时候，ip设置为192.168.1.122，端口号 3306
 
->**注意**
-本地 目录设置权限和用户组
-chown -R www:www /home/lanmps/www
-chmod -R 777 /home/lanmps/www
-这个时候访问本机 127.0.0.1:80  就可以看到 你的项目站点了
+**注意**
+* 本地 目录设置权限和用户组
+* chown -R www:www /home/lanmps/www
+* chmod -R 777 /home/lanmps/www
+* 这个时候访问本机 127.0.0.1:80  就可以看到 你的项目站点了
 
 #7. 容器命令
 

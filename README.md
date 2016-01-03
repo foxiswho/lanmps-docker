@@ -182,6 +182,7 @@ sudo systemctl restart docker
 > **注意：**
 >如果拉取时间过长，docker hub 会自动切断链接，它会报超时错误！
 >这个时候再重新执行拉取命令即可，他会接着上次拉取断的位置重新拉取的
+
 ##4.1 mysql
 ```
 #来自 https://hub.docker.com/_/mysql/
@@ -290,14 +291,17 @@ foxiswho/lanmps-docker   镜像名称:版本
 **注意**
 本地 目录设置权限和用户组
 chown -R www:www /home/lanmps/www
+
 chmod -R 777 /home/lanmps/www
+
 这个时候访问本机 127.0.0.1:80  就可以看到 你的项目站点了
 
+
 ##6.4.2 方式二 使用IP端口连接
-**
-> 注意
+
+>**注意**
 使用IP端口连接，必须是固定IP才可以
-**
+
 
 ```
 docker run --name lanmps -p 80:80 -v /home/lanmps/www:/www/wwwroot/default -d foxiswho/lanmps-docker
@@ -310,6 +314,7 @@ docker run --name lanmps -p 80:80 -v /home/lanmps/www:/www/wwwroot/default -d fo
 chown -R www:www /home/lanmps/www
 chmod -R 777 /home/lanmps/www
 这个时候访问本机 127.0.0.1:80  就可以看到 你的项目站点了
+
 #7. 容器命令
 
 > 普通情况下容器创建时，该容器就会是启动状态，如果关机了，那么就要启动该容器
@@ -380,6 +385,7 @@ docker rmi $(docker images -q)
 
 ##9.1 导出 export
 >Export命令用于持久化容器（不是镜像）
+
 ```
 #1.先查看 所有容器
 sudo docker ps -a
@@ -399,6 +405,7 @@ cat /home/export.tar | sudo docker import - lanmps:latest
 
 ##10.1 保存 save
 >Save命令用于持久化镜像（不是容器）
+
 ```
 #1.先查看 所有镜像
 sudo docker images
@@ -407,6 +414,7 @@ sudo docker save 镜像名称 > 保存地址文件名
 即
 sudo docker save lanmps > /home/save-lanmps.tar
 ```
+
 ##10.2 加载
 ```
 docker load < /home/save-lanmps.tar

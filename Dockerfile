@@ -18,10 +18,12 @@ RUN rm -rf /etc/localtime && \
     mkdir -p $IN_DIR/init.d  && \
     mkdir -p $IN_DIR/action  && \
     mkdir -p $IN_DIR/run  && \
+    mkdir -p $IN_DIR/tmp && \
     mkdir -p $IN_WEB_DIR/default && \
     chmod +w $IN_WEB_DIR/default && \
 #    mkdir -p $IN_WEB_LOG_DIR && \
     chmod 777 $IN_WEB_LOG_DIR && \
+    chmod -R 777 $IN_DIR/tmp && \
     chown -R www:www $IN_WEB_DIR/default && \
     mkdir -p ${PHP_DIR}/etc/ && \
     mkdir -p ${PHP_DIR}/conf.d/
@@ -89,13 +91,13 @@ RUN cd /tmp/nginx-1.8.0/ && \
 	--with-http_ssl_module \
 	--with-http_gzip_static_module \
 	--with-ipv6 \
-	#--http-proxy-temp-path=${IN_DIR}/tmp/nginx-proxy \
-	#--http-fastcgi-temp-path=${IN_DIR}/tmp/nginx-fcgi \
-	#--http-uwsgi-temp-path=${IN_DIR}/tmp/nginx-uwsgi \
-	#--http-scgi-temp-path=${IN_DIR}/tmp/nginx-scgi \
-	#--http-client-body-temp-path=${IN_DIR}/tmp/nginx-client \
+	--http-proxy-temp-path=${IN_DIR}/tmp/nginx-proxy \
+	--http-fastcgi-temp-path=${IN_DIR}/tmp/nginx-fcgi \
+	--http-uwsgi-temp-path=${IN_DIR}/tmp/nginx-uwsgi \
+	--http-scgi-temp-path=${IN_DIR}/tmp/nginx-scgi \
+	--http-client-body-temp-path=${IN_DIR}/tmp/nginx-client \
 	--http-log-path=${IN_WEB_LOG_DIR}/nginx.log \
-	--error-log-path=${IN_WEB_LOG_DIR}/nginx-error.log && \
+	--error-log-path=${IN_WEB_LOG_DIR}/nginx_error.log && \
 	make && make install && \
 	ln -s $IN_DIR/nginx/sbin/nginx /usr/bin/nginx && \
 	mkdir -p $IN_WEB_DIR/vhost

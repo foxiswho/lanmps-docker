@@ -22,7 +22,7 @@ RUN rm -rf /etc/localtime && \
     mkdir -p $IN_WEB_DIR/default && \
     chmod +w $IN_WEB_DIR/default && \
     mkdir -p $IN_WEB_LOG_DIR && \
-    chmod 777 $IN_WEB_LOG_DIR && \
+#    chmod 777 $IN_WEB_LOG_DIR && \
     chmod -R 777 $IN_DIR/tmp && \
     chown -R www:www $IN_WEB_DIR/default && \
     mkdir -p ${PHP_DIR}/etc/ && \

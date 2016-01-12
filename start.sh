@@ -12,7 +12,9 @@
 #    ln -s /www/wwwroot/wwwLogs/supervisord.log /www/wwwroot/default/logs/supervisord.log
 #    ln -s /www/wwwroot/wwwLogs /www/wwwroot/default/logs
 #fi
-
+#关闭 防止重复启动
+/www/lanmps/action/php-fpm stop
+/www/lanmps/action/nginx stop
 
 # Start supervisord and services
 /usr/bin/supervisord -n -c /etc/supervisord.conf

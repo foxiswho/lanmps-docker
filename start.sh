@@ -1,13 +1,17 @@
 #!/bin/bash
 
 
-if [ ! -f /www/wwwroot/vhost/more.yes ]; then
-    mkdir -p /www/wwwroot/default/logs
-    ln -s /www/wwwroot/wwwLogs/localhost.log /www/wwwroot/default/logs/localhost.log
-    ln -s /www/wwwroot/wwwLogs/nginx_error.log /www/wwwroot/default/logs/nginx_error.log
-    ln -s /www/wwwroot/wwwLogs/php-fpm.log /www/wwwroot/default/logs/php-fpm.log
-    ln -s /www/wwwroot/wwwLogs/supervisord.log /www/wwwroot/default/logs/supervisord.log
-fi
+#if [ -f /www/wwwroot/vhost/more.yes ]; then
+#   rm -rf /www/wwwroot/wwwLogs
+#   ln -s /www/wwwroot/wwwLogs /www/
+#else
+#    mkdir -p /www/wwwroot/default/logs
+#    ln -s /www/wwwroot/wwwLogs/localhost.log /www/wwwroot/default/logs/localhost.log
+#    ln -s /www/wwwroot/wwwLogs/nginx_error.log /www/wwwroot/default/logs/nginx_error.log
+#    ln -s /www/wwwroot/wwwLogs/php-fpm.log /www/wwwroot/default/logs/php-fpm.log
+#    ln -s /www/wwwroot/wwwLogs/supervisord.log /www/wwwroot/default/logs/supervisord.log
+#    ln -s /www/wwwroot/wwwLogs /www/wwwroot/default/logs
+#fi
 
 
 # Start supervisord and services

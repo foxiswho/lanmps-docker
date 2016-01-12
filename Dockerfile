@@ -96,8 +96,8 @@ RUN cd /tmp/nginx-1.8.0/ && \
 	--http-uwsgi-temp-path=${IN_DIR}/tmp/nginx-uwsgi \
 	--http-scgi-temp-path=${IN_DIR}/tmp/nginx-scgi \
 	--http-client-body-temp-path=${IN_DIR}/tmp/nginx-client \
-	--http-log-path=${IN_WEB_LOG_DIR}/nginx.log \
-	--error-log-path=${IN_WEB_LOG_DIR}/nginx_error.log && \
+	--http-log-path=${IN_WEB_DIR}/default/logs/nginx.log \
+	--error-log-path=${IN_WEB_DIR}/default/logs/nginx_error.log && \
 	make && make install && \
 	ln -s $IN_DIR/nginx/sbin/nginx /usr/bin/nginx && \
 	mkdir -p $IN_WEB_DIR/vhost
@@ -217,7 +217,7 @@ sed -i -e 's#extension_dir = "./"#extension_dir = "'$IN_DIR'/php/lib/php/extensi
 RUN sed -i -e "s/;daemonize\s*=\s*yes/daemonize = no/g" ${PHP_DIR}/etc/php-fpm.conf  && \
 sed -i -e "s/;catch_workers_output\s*=\s*yes/catch_workers_output = yes/g" ${PHP_DIR}/etc/php-fpm.conf && \
 sed -i 's:;pid = run/php-fpm.pid:pid = run/php-fpm.pid:g' ${PHP_DIR}/etc/php-fpm.conf && \
-sed -i 's:;error_log = log/php-fpm.log:error_log = '"$IN_WEB_LOG_DIR"'/php-fpm.log:g' ${PHP_DIR}/etc/php-fpm.conf && \
+sed -i 's:;error_log = log/php-fpm.log:error_log = '"$IN_WEB_DIR"'/default/logs/php-fpm.log:g' ${PHP_DIR}/etc/php-fpm.conf && \
 sed -i 's:;log_level = notice:log_level = notice:g' ${PHP_DIR}/etc/php-fpm.conf && \
 sed -i 's:pm.max_children = 5:pm.max_children = 10:g' ${PHP_DIR}/etc/php-fpm.conf && \
 sed -i 's:pm.start_servers = 2:pm.start_servers = 3:g' ${PHP_DIR}/etc/php-fpm.conf && \

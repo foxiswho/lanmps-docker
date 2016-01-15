@@ -242,7 +242,8 @@ RUN chmod +x /start.sh && \
      chmod +x $IN_DIR/action/nginx && \
      chown -R www:www $IN_WEB_DIR/  && \
      chmod -R 777 $IN_WEB_DIR/default && \
-     sed -i -e "s#\[supervisord\]#\[supervisord\]\nnodaemon=true\nuser=root#" /etc/supervisor/supervisord.conf
+     sed -i -e "s#\[supervisord\]#\[supervisord\]\nnodaemon=true\nuser=root#" /etc/supervisor/supervisord.conf && \
+     sed -i -e "s#/var/log/supervisor#/www/wwwroot/default/logs#" /etc/supervisor/supervisord.conf
 
 #删除多余文件
 RUN apt-get clean && \

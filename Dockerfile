@@ -27,21 +27,6 @@ RUN rm -rf /etc/localtime && \
     chown -R www:www $IN_WEB_DIR/default && \
     mkdir -p ${PHP_DIR}/etc/ && \
     mkdir -p ${PHP_DIR}/conf.d/
-
-
-# Supervisor Config
-ADD conf/supervisord.conf /etc/supervisord.conf
-# Start Supervisord
-ADD ./start.sh /start.sh
-# add test PHP file
-ADD ./conf/index.php $IN_WEB_DIR/default/
-ADD ./conf/action.nginx $IN_DIR/action/nginx
-
-RUN chmod +x /start.sh && \
-     chmod +x $IN_DIR/action/nginx && \
-     chown -R www:www $IN_WEB_DIR/  && \
-     chmod -R 777 $IN_WEB_DIR/default
-     
      
 # persistent / runtime deps
 #RUN sed -i 's#http://httpredir.debian.org/debian#http://mirrors.163.com/debian#g' /etc/apt/sources.list && \
@@ -244,6 +229,19 @@ RUN cd /tmp/  && \
 	./configure --with-php-config=${PHP_DIR}/bin/php-config && \
 	make && make install
 
+
+# Supervisor Config
+ADD ./conf/supervisord.nginx.php-fpm.conf /etc/supervisor/conf.d/nginx.php-fpm.conf
+# Start Supervisord
+ADD ./start.sh /start.sh
+# add test PHP file
+ADD ./conf/index.php $IN_WEB_DIR/default/
+ADD ./conf/action.nginx $IN_DIR/action/nginx
+
+RUN chmod +x /start.sh && \
+     chmod +x $IN_DIR/action/nginx && \
+     chown -R www:www $IN_WEB_DIR/  && \
+     chmod -R 777 $IN_WEB_DIR/default
 
 #删除多余文件
 RUN apt-get clean && \

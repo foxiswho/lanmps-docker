@@ -20,7 +20,7 @@
 #/usr/bin/supervisord -n -c /etc/supervisord.conf
 
 
-sed -i -e "s#\[supervisord\]#\[supervisord\]\nnodaemon=true\nuser=root#" /etc/supervisor/supervisord.conf
+#sed -i -e "s#\[supervisord\]#\[supervisord\]\nnodaemon=true\nuser=root#" /etc/supervisor/supervisord.conf
 
 #/etc/init.d/supervisor
 /etc/init.d/supervisor start

@@ -8,13 +8,13 @@ Pull the image from the docker index rather than downloading the git repo. This 
 
 ```
 #拉取镜像
-docker pull foxiswho/lanmps-docker:latest
+docker pull foxiswho/nginx-php:latest
 ```
 # Running
 To simply run the container:
 
 ```
-sudo docker run --name lanmps -p 8080:80 -d foxiswho/lanmps-docker:latest
+sudo docker run --name lanmps -p 8080:80 -d foxiswho/nginx-php:latest
 ```
 
 You can then browse to http://\<docker_host\>:8080 to view the default install files.
@@ -23,9 +23,9 @@ If you want to link to your web site directory on the docker host to the contain
 
 ```
 #创建容器
-sudo docker run --name lanmps -p 8080:80 -v /your_code_directory:/www/wwwroot/default -d foxiswho/lanmps-docker:latest
+sudo docker run --name lanmps -p 8080:80 -v /your_code_directory:/www/wwwroot/default -d foxiswho/nginx-php:latest
 
-sudo docker run --name lanmps -p 8080:80 -v /home/fox/www:/www/wwwroot/default -d foxiswho/lanmps-docker:latest
+sudo docker run --name lanmps -p 8080:80 -v /home/fox/www:/www/wwwroot/default -d foxiswho/nginx-php:latest
 ```
 
 # BIN
@@ -77,9 +77,9 @@ docker run --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root -d mysql:latest
 #  Nginx + PHP + Mysql + Redis + ElasticSearch
 ```
 #整合容器
-sudo docker run --name lanmps --link mysql:db --link redis:redis --link es:es -p 80:80 -v /home/lanmps/www:/www/wwwroot/default -d foxiswho/lanmps-docker:latest
+sudo docker run --name lanmps --link mysql:db --link redis:redis --link es:es -p 80:80 -v /home/lanmps/www:/www/wwwroot/default -d foxiswho/nginx-php:latest
 or
-sudo docker run --name lanmps --link mysql:db -p 80:80 -v /home/lanmps/www:/www/wwwroot/default -d foxiswho/lanmps-docker:latest
+sudo docker run --name lanmps --link mysql:db -p 80:80 -v /home/lanmps/www:/www/wwwroot/default -d foxiswho/nginx-php:latest
 ```
 
 ## Windsow 下 通过虚拟机
@@ -207,8 +207,8 @@ elasticsearch 后面没有版本号时，默认拉取最新的一版 即  elasti
 
 ##4.4 nginx 和php
 ```
-#来自 https://hub.docker.com/r/foxiswho/lanmps-docker
-sudo docker pull foxiswho/lanmps-docker
+#来自 https://hub.docker.com/r/foxiswho/nginx-php
+sudo docker pull foxiswho/nginx-php
 ```
 lanmps 后面没有版本号时，默认拉取最新的一版 即  lanmps:latest
 nginx 版本 1.8.0
@@ -266,7 +266,7 @@ elasticsearch:latest   镜像名称:版本
 ##6.4 Nginx+PHP
 ###6.4.1 方式一  容器内链接
 ```
-docker run --name lanmps --link mysql:db --link es:es --link redis:redis -p 80:80 -v /home/lanmps/www:/www/wwwroot/default -d foxiswho/lanmps-docker
+docker run --name lanmps --link mysql:db --link es:es --link redis:redis -p 80:80 -v /home/lanmps/www:/www/wwwroot/default -d foxiswho/nginx-php
 ```
 --name 容器名称
 
@@ -277,7 +277,7 @@ docker run --name lanmps --link mysql:db --link es:es --link redis:redis -p 80:8
 
 -d:后台模式运行，如果没有则以前台运行（当前进程关闭后，当前容器自动关闭）
 
-foxiswho/lanmps-docker   镜像名称:版本
+foxiswho/nginx-php   镜像名称:版本
 
 --link:容器内部通信          容器名称：内部别名（内部使用）
 >--link mysql:db    使用时，直接使用db 就可以访问到数据库mysql容器
@@ -302,7 +302,7 @@ foxiswho/lanmps-docker   镜像名称:版本
 
 
 ```
-docker run --name lanmps -p 80:80 -v /home/lanmps/www:/www/wwwroot/default -d foxiswho/lanmps-docker
+docker run --name lanmps -p 80:80 -v /home/lanmps/www:/www/wwwroot/default -d foxiswho/nginx-php
 ```
 例如 本机ip 为 192.168.1.122
 那么在链接   数据库3306 的时候，ip设置为192.168.1.122，端口号 3306

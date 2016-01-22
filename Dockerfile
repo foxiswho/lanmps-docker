@@ -24,7 +24,9 @@ RUN rm -rf /etc/localtime && \
     chmod -R 777 $IN_DIR/tmp && \
     chown -R www:www $IN_WEB_DIR/default && \
     mkdir -p ${PHP_DIR}/etc/ && \
-    mkdir -p ${PHP_DIR}/conf.d/
+    mkdir -p ${PHP_DIR}/conf.d/ && \
+    mkdir -p $IN_WEB_LOG_DIR && \
+    mkdir -p $IN_DIR/nginx/conf/vhost
      
 # persistent / runtime deps
 #RUN sed -i 's#http://httpredir.debian.org/debian#http://mirrors.163.com/debian#g' /etc/apt/sources.list && \
@@ -84,7 +86,7 @@ RUN cd /tmp/nginx-1.8.0/ && \
 	make && make install && \
 	ln -s $IN_DIR/nginx/sbin/nginx /usr/bin/nginx && \
 	mkdir -p $IN_WEB_DIR/vhost && \
-	mkdir -p $IN_DIR/nginx/conf/vhost 
+	mkdir -p $IN_DIR/nginx/conf/vhost
 
 COPY conf/nginx.conf $IN_DIR/nginx/conf/nginx.conf
 COPY conf/fastcgi.conf $IN_DIR/nginx/conf/fastcgi.conf

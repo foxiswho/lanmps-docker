@@ -23,9 +23,9 @@ If you want to link to your web site directory on the docker host to the contain
 
 ```
 #创建容器
-sudo docker run --name lanmps -p 8080:80 -v /your_code_directory:/www/wwwroot/default -d foxiswho/nginx-php:latest
+sudo docker run --name lanmps -p 8080:80 -v /your_code_directory:/www/wwwroot -d foxiswho/nginx-php:latest
 
-sudo docker run --name lanmps -p 8080:80 -v /home/fox/www:/www/wwwroot/default -d foxiswho/nginx-php:latest
+sudo docker run --name lanmps -p 8080:80 -v /home/fox/www:/www/wwwroot -d foxiswho/nginx-php:latest
 ```
 
 # BIN
@@ -77,9 +77,9 @@ docker run --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root -d mysql:latest
 #  Nginx + PHP + Mysql + Redis + ElasticSearch
 ```
 #整合容器
-sudo docker run --name lanmps --link mysql:db --link redis:redis --link es:es -p 80:80 -v /home/lanmps/www:/www/wwwroot/default -d foxiswho/nginx-php:latest
+sudo docker run --name lanmps --link mysql:db --link redis:redis --link es:es -p 80:80 -v /home/lanmps/www:/www/wwwroot -d foxiswho/nginx-php:latest
 or
-sudo docker run --name lanmps --link mysql:db -p 80:80 -v /home/lanmps/www:/www/wwwroot/default -d foxiswho/nginx-php:latest
+sudo docker run --name lanmps --link mysql:db -p 80:80 -v /home/lanmps/www:/www/wwwroot -d foxiswho/nginx-php:latest
 ```
 
 ## Windsow 下 通过虚拟机
@@ -266,7 +266,7 @@ elasticsearch:latest   镜像名称:版本
 ##6.4 Nginx+PHP
 ###6.4.1 方式一  容器内链接
 ```
-docker run --name lanmps --link mysql:db --link es:es --link redis:redis -p 80:80 -v /home/lanmps/www:/www/wwwroot/default -d foxiswho/nginx-php
+docker run --name lanmps --link mysql:db --link es:es --link redis:redis -p 80:80 -v /home/lanmps/www:/www/wwwroot -d foxiswho/nginx-php
 ```
 --name 容器名称
 
@@ -284,9 +284,9 @@ foxiswho/nginx-php   镜像名称:版本
 >php 访问本地mysql 使用的是localhost，容器内部即可使用 db
 
 -v:卷，外部目录虚拟到容器内目录     外部目录：容器内目录
-* -v /home/lanmps/www:/www/wwwroot/default
+* -v /home/lanmps/www:/www/wwwroot
 * /home/lanmps/www 外部目录，我的项目目录
-* /www/wwwroot/default 容器内部目录，这个是不能改变的
+* /www/wwwroot 容器内部目录，这个是不能改变的
 
 **注意**
 * 本地 目录设置权限和用户组
@@ -302,7 +302,7 @@ foxiswho/nginx-php   镜像名称:版本
 
 
 ```
-docker run --name lanmps -p 80:80 -v /home/lanmps/www:/www/wwwroot/default -d foxiswho/nginx-php
+docker run --name lanmps -p 80:80 -v /home/lanmps/www:/www/wwwroot -d foxiswho/nginx-php
 ```
 例如 本机ip 为 192.168.1.122
 那么在链接   数据库3306 的时候，ip设置为192.168.1.122，端口号 3306

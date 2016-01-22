@@ -4,16 +4,14 @@ FROM debian:jessie
 ENV PHP_DIR /www/lanmps/php
 ENV IN_DIR /www/lanmps
 ENV IN_WEB_DIR /www/wwwroot
-ENV IN_WEB_LOG_DIR /www/wwwLogs
+ENV IN_WEB_LOG_DIR /www/wwwroot/vhost/logs
 
 RUN rm -rf /etc/localtime && \
     ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     groupadd www && \
     useradd -s /sbin/nologin -g www www && \
     mkdir -p $PHP_DIR && \
-    mkdir -p $IN_WEB_DIR/wwwLogs && \
     mkdir -p $IN_WEB_DIR/vhost && \
-    ln -s $IN_WEB_DIR/wwwLogs /www/ && \
     mkdir -p $IN_DIR/etc  && \
     mkdir -p $IN_DIR/init.d  && \
     mkdir -p $IN_DIR/action  && \
@@ -22,7 +20,7 @@ RUN rm -rf /etc/localtime && \
     mkdir -p $IN_WEB_DIR/default && \
     chmod +w $IN_WEB_DIR/default && \
     mkdir -p $IN_WEB_LOG_DIR && \
-#    chmod 777 $IN_WEB_LOG_DIR && \
+    chmod 777 $IN_WEB_LOG_DIR && \
     chmod -R 777 $IN_DIR/tmp && \
     chown -R www:www $IN_WEB_DIR/default && \
     mkdir -p ${PHP_DIR}/etc/ && \
@@ -81,16 +79,18 @@ RUN cd /tmp/nginx-1.8.0/ && \
 	--http-uwsgi-temp-path=${IN_DIR}/tmp/nginx-uwsgi \
 	--http-scgi-temp-path=${IN_DIR}/tmp/nginx-scgi \
 	--http-client-body-temp-path=${IN_DIR}/tmp/nginx-client \
-	--http-log-path=${IN_WEB_DIR}/default/logs/nginx.log \
-	--error-log-path=${IN_WEB_DIR}/default/logs/nginx_error.log && \
+	--http-log-path=${IN_WEB_LOG_DIR}/nginx.log \
+	--error-log-path=${IN_WEB_LOG_DIR}/nginx_error.log && \
 	make && make install && \
 	ln -s $IN_DIR/nginx/sbin/nginx /usr/bin/nginx && \
-	mkdir -p $IN_WEB_DIR/vhost
+	mkdir -p $IN_WEB_DIR/vhost && \
+	mkdir -p $IN_DIR/conf/vhost && \
 
 COPY conf/nginx.conf $IN_DIR/nginx/conf/nginx.conf
 COPY conf/fastcgi.conf $IN_DIR/nginx/conf/fastcgi.conf
 COPY conf/upstream.conf $IN_DIR/nginx/conf/upstream.conf
 COPY conf/default.conf $IN_WEB_DIR/vhost/00000.default.conf
+COPY conf/default.conf $IN_DIR/nginx/conf/vhost/00000.default.conf
 
 
 ENV GPG_KEYS 0BD78B5F97500D450838F95DFE857D9A90D90EC1 6E4F6AB321FDC07F2C332E3AC2BF0BC433CFC8B3
@@ -202,7 +202,7 @@ sed -i -e 's#extension_dir = "./"#extension_dir = "'$IN_DIR'/php/lib/php/extensi
 RUN sed -i -e "s/;daemonize\s*=\s*yes/daemonize = no/g" ${PHP_DIR}/etc/php-fpm.conf  && \
 sed -i -e "s/;catch_workers_output\s*=\s*yes/catch_workers_output = yes/g" ${PHP_DIR}/etc/php-fpm.conf && \
 sed -i 's:;pid = run/php-fpm.pid:pid = run/php-fpm.pid:g' ${PHP_DIR}/etc/php-fpm.conf && \
-sed -i 's:;error_log = log/php-fpm.log:error_log = '"$IN_WEB_DIR"'/default/logs/php-fpm.log:g' ${PHP_DIR}/etc/php-fpm.conf && \
+sed -i 's:;error_log = log/php-fpm.log:error_log = '"$IN_WEB_LOG_DIR"'/php-fpm.log:g' ${PHP_DIR}/etc/php-fpm.conf && \
 sed -i 's:;log_level = notice:log_level = notice:g' ${PHP_DIR}/etc/php-fpm.conf && \
 sed -i 's:pm.max_children = 5:pm.max_children = 10:g' ${PHP_DIR}/etc/php-fpm.conf && \
 sed -i 's:pm.start_servers = 2:pm.start_servers = 3:g' ${PHP_DIR}/etc/php-fpm.conf && \
@@ -243,7 +243,7 @@ RUN chmod +x /start.sh && \
      chown -R www:www $IN_WEB_DIR/  && \
      chmod -R 777 $IN_WEB_DIR/default && \
      sed -i -e "s#\[supervisord\]#\[supervisord\]\nnodaemon=true\nuser=root#" /etc/supervisor/supervisord.conf && \
-     sed -i -e "s#/var/log/supervisor#/www/wwwroot/default/logs#" /etc/supervisor/supervisord.conf
+     sed -i -e "s#/var/log/supervisor#/www/wwwroot/vhost/logs#" /etc/supervisor/supervisord.conf
 
 #删除多余文件
 RUN apt-get clean && \

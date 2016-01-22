@@ -12,7 +12,7 @@ DAEMON=$IN_DIR/nginx/sbin/$NAME
 CONF=$IN_DIR/nginx/conf/$NAME.conf
 PID_FILE=$IN_DIR/nginx/logs/$NAME.pid
 SCRIPT_NAME=$IN_DIR/action/$NAME
-IN_WEB_LOG_DIR="/www/wwwLogs"
+IN_WEB_LOG_DIR="/www/wwwroot/vhost/logs"
 
 set -e
 [ -x "$DAEMON" ] || exit 0

@@ -2,10 +2,10 @@
 
 WWW_ROOT=/www/wwwroot
 
-mkdir -p $WWW_ROOT/default
+mkdir -p $WWW_ROOT
 mkdir -p $WWW_ROOT/vhost/logs/
-chown -R www:www $WWW_ROOT/default
-chmod -R 777  $WWW_ROOT/default
+chown -R www:www $WWW_ROOT
+chmod -R 777  $WWW_ROOT
 
 touch $WWW_ROOT/vhost/logs/index.log
 echo " START ==================================\n" >> $WWW_ROOT/vhost/logs/supervisord.log

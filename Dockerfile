@@ -84,7 +84,7 @@ RUN cd /tmp/nginx-1.8.0/ && \
 	make && make install && \
 	ln -s $IN_DIR/nginx/sbin/nginx /usr/bin/nginx && \
 	mkdir -p $IN_WEB_DIR/vhost && \
-	mkdir -p $IN_DIR/nginx/conf/vhost && \
+	mkdir -p $IN_DIR/nginx/conf/vhost 
 
 COPY conf/nginx.conf $IN_DIR/nginx/conf/nginx.conf
 COPY conf/fastcgi.conf $IN_DIR/nginx/conf/fastcgi.conf

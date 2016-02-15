@@ -16,7 +16,7 @@ if [ ! -f $CONF ]; then
 fi
 INDEX=$WWW_ROOT/index.php
 if [ ! -f $INDEX ]; then
-    echo "<?php\n phpinfo();" > $INDEX
+    echo "<?php phpinfo();" > $INDEX
 fi
 
 /etc/init.d/supervisor start
